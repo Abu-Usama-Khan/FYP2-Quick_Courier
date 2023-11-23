@@ -1,1 +1,4 @@
-//import 'package:flutter/material.dart';
+var liveURL = 'https://tame-pink-chick.cyclic.app/';
+var id = '';
+var token = '';
+var userCountry = '';
