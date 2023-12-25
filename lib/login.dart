@@ -38,6 +38,7 @@ class _LogInScreenState extends State<LogInScreen> {
         body: {'emailAddress': email, 'password': password});
     var body = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
+      userCountry = body['data']['country'];
       id = body['data']['_id'];
       token = body['token'];
       showSuccessMessage('Login Successfully!');
@@ -49,6 +50,8 @@ class _LogInScreenState extends State<LogInScreen> {
       showErrorMessage(body['message']);
     }
   }
+
+  bool isVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -66,34 +69,62 @@ class _LogInScreenState extends State<LogInScreen> {
         ),
         SizedBox(
             width: width * 0.85,
-            height: height * 0.08,
-            child: TextField(
+            height: height * 0.09,
+            child: TextFormField(
                 controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (val) {
+                  if (val != null) {
+                    if (RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(val)) {
+                      return null;
+                    } else {
+                      return 'Enter a valid email address';
+                    }
+                  } else {
+                    return null;
+                  }
+                },
                 decoration: const InputDecoration(
-                    labelText: AutofillHints.email,
-                    hintText: 'Enter your email',
-                    labelStyle:
-                        TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                    border: UnderlineInputBorder()),
+                  labelText: AutofillHints.email,
+                  labelStyle: TextStyle(
+                      color: Color.fromRGBO(242, 140, 40, 5), fontSize: 20),
+                  border: UnderlineInputBorder(),
+                  isDense: true,
+                ),
                 style: const TextStyle(fontSize: 25))),
         SizedBox(
             width: width * 0.85,
-            height: height * 0.08,
+            height: height * 0.09,
             child: TextField(
                 controller: passwordController,
-                decoration: const InputDecoration(
+                obscureText: isVisible,
+                decoration: InputDecoration(
                     labelText: AutofillHints.password,
-                    hintText: 'Enter your password',
-                    labelStyle:
-                        TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                    border: UnderlineInputBorder()),
+                    labelStyle: TextStyle(
+                        color: Color.fromRGBO(242, 140, 40, 5), fontSize: 20),
+                    border: UnderlineInputBorder(),
+                    isDense: true,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        isVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Color.fromARGB(255, 255, 115, 0),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isVisible = !isVisible;
+                        });
+                      },
+                    )),
                 style: const TextStyle(fontSize: 25))),
         Padding(
             padding: EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
             child: ElevatedButton(
                 style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Color.fromRGBO(242, 140, 40, 5)),
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(255, 255, 115, 0)),
                   foregroundColor: MaterialStatePropertyAll(Colors.black),
                   fixedSize: MaterialStatePropertyAll(Size.fromWidth(200)),
                 ),
@@ -109,7 +140,7 @@ class _LogInScreenState extends State<LogInScreen> {
           const Center(
               child: Text(
             'Donot have Account?',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           )),
           GestureDetector(
               child: const Text(' Sign Up'),

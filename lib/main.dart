@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'login.dart';
-import 'navigation.dart';
-//import 'frontpage.dart';
-//import 'ListVerificationNote.dart';
+import 'splashScreen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,25 +11,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Quick Courier',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Color.fromRGBO(242, 140, 40, 5),
+            seedColor: Color.fromARGB(255, 255, 115, 0),
           ),
-          scaffoldBackgroundColor: Colors.black,
+          scaffoldBackgroundColor: Colors.white,
           textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: Color.fromRGBO(242, 140, 40, 5),
-              displayColor: Color.fromRGBO(242, 140, 40, 5)),
+              bodyColor: Color.fromARGB(255, 255, 115, 0),
+              displayColor: Color.fromARGB(255, 255, 115, 0)),
           appBarTheme: const AppBarTheme(
-              backgroundColor: Color.fromRGBO(242, 140, 40, 5)),
-          hintColor: Color.fromRGBO(242, 140, 40, 70),
+              backgroundColor: Color.fromARGB(255, 255, 115, 0)),
+          hintColor: Color.fromARGB(255, 255, 115, 0),
           useMaterial3: true,
         ),
-        //home: const LogInScreen()
-        home: const MyHomePage()
-        //home: const MyWidget()
-        );
+        home: SplashScreen());
   }
 }

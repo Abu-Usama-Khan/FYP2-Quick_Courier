@@ -22,13 +22,12 @@ class _AccountNotLoginScreenState extends State<AccountNotLoginScreen> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: height * 0.04),
+                padding: EdgeInsets.only(top: height * 0.075),
                 child: SizedBox(
                   width: width * 0.4,
                   height: width * 0.4,
                   child: const CircleAvatar(
-                    backgroundImage:
-                        AssetImage('assets/images/Quick logo.jpeg'),
+                    backgroundImage: AssetImage('assets/images/images1.png'),
                   ),
                 ),
               ),
@@ -48,7 +47,7 @@ class _AccountNotLoginScreenState extends State<AccountNotLoginScreen> {
                   children: [
                     const Text(
                       'New on Quick Courier? Click on ',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black),
                     ),
                     GestureDetector(
                         child: const Text('Sign Up'),

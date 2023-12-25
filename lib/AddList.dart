@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/payment%20screen.dart';
-import 'package:fyp2/globalVar.dart';
+import 'package:fyp2/paymentScreen.dart';
+import 'package:csc_picker/csc_picker.dart';
+import 'package:date_field/date_field.dart';
 
 class AddListScreen extends StatefulWidget {
   const AddListScreen({super.key});
@@ -10,15 +11,15 @@ class AddListScreen extends StatefulWidget {
 }
 
 class _AddListScreenState extends State<AddListScreen> {
-  TextEditingController baseCountryController = TextEditingController();
-  TextEditingController baseCityController = TextEditingController();
-  TextEditingController destCountryController =
-      TextEditingController(text: userCountry);
-  TextEditingController destCityController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
   TextEditingController destLocController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+
+  var baseCountry = '';
+  String? baseCity;
+  var destCountry = '';
+  String? destCity;
+  String? recDate;
 
   void showErrorMessage(msg) {
     SnackBar snckbar =
@@ -27,21 +28,23 @@ class _AddListScreenState extends State<AddListScreen> {
   }
 
   void nullCheck() {
-    if (baseCountryController.text.toString() == '' &&
-        baseCityController.text.toString() == '' &&
-        destCityController.text.toString() == '' &&
-        dateController.text.toString() == '' &&
-        destLocController.text.toString() == '' &&
-        descController.text.toString() == '' &&
-        priceController.text.toString() == '') {
+    if (baseCountry != '' &&
+        baseCity != '' &&
+        destCountry != '' &&
+        destCity != '' &&
+        recDate != '' &&
+        destLocController.text.toString() != '' &&
+        descController.text.toString() != '' &&
+        priceController.text.toString() != '') {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => PaymentScreen(
-                  baseCtry: baseCountryController.text.toString(),
-                  baseCity: baseCityController.text.toString(),
-                  destCity: destCityController.text.toString(),
-                  date: dateController.text.toString(),
+                  baseCtry: baseCountry,
+                  baseCty: baseCity,
+                  destCtry: destCountry,
+                  destCty: destCity,
+                  date: recDate,
                   destLoc: destLocController.text.toString(),
                   desc: descController.text.toString(),
                   price: priceController.text.toString())));
@@ -52,69 +55,162 @@ class _AddListScreenState extends State<AddListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
+    var height = size.height;
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Add List'),
-        ),
-        body: Center(
-          child: Container(
-            width: 300,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text('Add List'),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
+            width: width * 0.85,
+            height: height * 0.85,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextField(
-                  controller: baseCountryController,
-                  decoration: InputDecoration(hintText: "Base Country"),
-                ),
-                TextField(
-                    controller: baseCityController,
-                    decoration: InputDecoration(hintText: "Base City")),
-                TextField(
-                  controller: destCountryController,
-                  readOnly: true,
-                ),
-                TextField(
-                    controller: destCityController,
-                    decoration: InputDecoration(hintText: "Destination City")),
-                TextField(
-                    controller: dateController,
-                    decoration: InputDecoration(
-                        hintText: "Recieving Date",
-                        suffixIcon: IconButton(
-                            onPressed: () {}, icon: Icon(Icons.date_range)))),
-                TextField(
-                    controller: destLocController,
-                    decoration:
-                        InputDecoration(hintText: "Destination Address")),
-                TextField(
-                    controller: descController,
-                    decoration: InputDecoration(hintText: "Description")),
-                TextField(
-                    controller: priceController,
-                    decoration: InputDecoration(
-                        hintText: "Price you pay (in USD dollar)",
-                        suffixIcon: IconButton(
-                            onPressed: () {}, icon: Icon(Icons.payments)))),
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                    onPressed: () => nullCheck(),
-                    child: Icon(Icons.post_add),
-                    style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        backgroundColor: Color.fromRGBO(242, 140, 40, 5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                        padding: EdgeInsets.only(
-                            left: 30, right: 30, top: 20, bottom: 20)),
+                  padding: EdgeInsets.only(top: height * 0.05),
+                  child: const Text(
+                    'Base Region',
+                    style: TextStyle(fontSize: 20),
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.003),
+                  child: Divider(
+                    color: Color.fromARGB(255, 255, 115, 0),
+                    thickness: height * 0.003,
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(bottom: height * 0.02),
+                    child: CSCPicker(
+                      onCountryChanged: (country) {
+                        setState(() {
+                          baseCountry = country.toString();
+                        });
+                      },
+                      onStateChanged: (state) {},
+                      onCityChanged: (city) {
+                        setState(() {
+                          baseCity = city;
+                        });
+                      },
+                    )),
+                const Text('Destination Region',
+                    style: TextStyle(fontSize: 20)),
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.003),
+                  child: Divider(
+                    color: Color.fromARGB(255, 255, 115, 0),
+                    thickness: height * 0.003,
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(bottom: height * 0.003),
+                    child: CSCPicker(
+                      onCountryChanged: (country) {
+                        setState(() {
+                          destCountry = country.toString();
+                        });
+                      },
+                      onStateChanged: (state) {},
+                      onCityChanged: (city) {
+                        setState(() {
+                          destCity = city.toString();
+                        });
+                      },
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: height * 0.02, bottom: height * 0.003),
+                    child: DateTimeFormField(
+                      decoration: const InputDecoration(
+                          hintStyle: TextStyle(
+                              color: Color.fromARGB(255, 152, 152, 152)),
+                          errorStyle: TextStyle(color: Colors.redAccent),
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.event_note),
+                          labelText: 'Recieving Date',
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 152, 152, 152))),
+                      mode: DateTimeFieldPickerMode.date,
+                      autovalidateMode: AutovalidateMode.always,
+                      firstDate: DateTime.now(),
+                      onDateSelected: (value) {
+                        recDate = value.month.toString() +
+                            '-' +
+                            value.day.toString() +
+                            '-' +
+                            value.year.toString();
+                      },
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.003),
+                  child: TextField(
+                    controller: destLocController,
+                    decoration: const InputDecoration(
+                      hintText: 'Destination Address',
+                      hintStyle: TextStyle(
+                          color: Color.fromARGB(255, 152, 152, 152),
+                          fontSize: 15.0),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.003),
+                  child: TextField(
+                    controller: descController,
+                    decoration: const InputDecoration(
+                      hintText: 'Description',
+                      hintStyle: TextStyle(
+                          color: Color.fromARGB(255, 152, 152, 152),
+                          fontSize: 15.0),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: height * 0.003),
+                  child: TextField(
+                    controller: priceController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      hintText: 'Price you pay (in USD dollar)',
+                      hintStyle: TextStyle(
+                          color: Color.fromARGB(255, 152, 152, 152),
+                          fontSize: 15.0),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: height * 0.03),
+                  child: ElevatedButton(
+                      onPressed: () => nullCheck(),
+                      style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          backgroundColor: Color.fromARGB(255, 255, 115, 0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          padding: const EdgeInsets.only(
+                              left: 30, right: 30, top: 20, bottom: 20)),
+                      child: const Icon(
+                        Icons.arrow_forward,
+                        color: Colors.black,
+                      )),
                 )
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

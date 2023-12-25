@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp2/termsCond.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'navigation.dart';
 import 'login.dart';
@@ -18,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController cnfrmPasswordController = TextEditingController();
   TextEditingController countryController =
       TextEditingController(text: 'Pakistan');
   TextEditingController phoneController = TextEditingController();
@@ -62,127 +64,267 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  bool isVisible = true;
+  bool isVisible2 = true;
+  bool? checkValue = false;
+  String validate = '';
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var width = size.width;
     var height = size.height;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
-      child: SizedBox(
-        width: 500,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: height * 0.03),
-            child: const Text('Sign Up!', style: TextStyle(fontSize: 40)),
-          ),
-          SizedBox(
-              width: width * 0.85,
-              height: height * 0.08,
-              child: TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                      labelText: AutofillHints.name,
-                      hintText: 'Full Name',
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                      border: UnderlineInputBorder()),
-                  style: const TextStyle(fontSize: 25))),
-          SizedBox(
-              width: width * 0.85,
-              height: height * 0.08,
-              child: TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                      labelText: AutofillHints.email,
-                      hintText: 'Email Address',
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                      border: UnderlineInputBorder()),
-                  style: const TextStyle(fontSize: 25))),
-          SizedBox(
-              width: width * 0.85,
-              height: height * 0.08,
-              child: TextField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                      labelText: AutofillHints.password,
-                      hintText: 'Password',
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                      border: UnderlineInputBorder()),
-                  style: const TextStyle(fontSize: 25))),
-          SizedBox(
-            height: height * 0.02,
-          ),
-          SizedBox(
-              width: width * 0.85,
-              height: height * 0.08,
-              child: IntlPhoneField(
-                //pickerDialogStyle: C,
-                controller: phoneController,
-                onCountryChanged: (phone) =>
-                    countryController.text = phone.name,
-                initialCountryCode: 'PK',
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                  labelStyle: TextStyle(color: Color.fromRGBO(242, 140, 40, 5)),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(),
-                  ),
-                ),
-              )),
-          SizedBox(
-              width: width * 0.85,
-              height: height * 0.08,
-              child: TextField(
-                  controller: countryController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'country (read only)',
-                      labelStyle:
-                          TextStyle(color: Color.fromRGBO(242, 140, 40, 5))),
-                  style: const TextStyle(fontSize: 25))),
-          Padding(
-              padding:
-                  EdgeInsets.only(top: height * 0.05, bottom: height * 0.03),
-              child: ElevatedButton(
-                  onPressed: () => signUpAPI(
-                      nameController.text.toString(),
-                      emailController.text.toString(),
-                      passwordController.text.toString(),
-                      countryController.text.toString(),
-                      phoneController.text.toString()),
-                  style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                        Color.fromRGBO(242, 140, 40, 5)),
-                    foregroundColor: MaterialStatePropertyAll(Colors.black),
-                    fixedSize: MaterialStatePropertyAll(Size.fromWidth(200)),
-                  ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 30),
-                  ))),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Center(
-                  child: Text(
-                'Already have Account?',
-                style: TextStyle(color: Colors.white),
-              )),
-              GestureDetector(
-                child: const Text(' Login'),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LogInScreen())),
+          child: SizedBox(
+            width: 500,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.03),
+                child: const Text('Sign Up!', style: TextStyle(fontSize: 40)),
+              ),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: AutofillHints.name,
+                        labelStyle: TextStyle(
+                            color: Color.fromRGBO(242, 140, 40, 5),
+                            fontSize: 20),
+                        border: UnderlineInputBorder(),
+                        isDense: true,
+                      ),
+                      style: const TextStyle(fontSize: 25))),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: TextFormField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (val) {
+                        if (val != null) {
+                          validate = val;
+                          if (RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(val)) {
+                            return null;
+                          } else {
+                            return 'Enter a valid email address';
+                          }
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        labelText: AutofillHints.email,
+                        labelStyle: TextStyle(
+                            color: Color.fromRGBO(242, 140, 40, 5),
+                            fontSize: 20),
+                        border: UnderlineInputBorder(),
+                        isDense: true,
+                      ),
+                      style: const TextStyle(fontSize: 25))),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: TextFormField(
+                    controller: passwordController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (val) {
+                      if (val != null) {
+                        if (val.length < 6) {
+                          return 'Password should atleast 6 characters long';
+                        } else {
+                          return null;
+                        }
+                      } else {
+                        return null;
+                      }
+                    },
+                    obscureText: isVisible,
+                    decoration: InputDecoration(
+                        labelText: AutofillHints.password,
+                        labelStyle: TextStyle(
+                            color: Color.fromRGBO(242, 140, 40, 5),
+                            fontSize: 20),
+                        border: UnderlineInputBorder(),
+                        isDense: true,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            isVisible ? Icons.visibility : Icons.visibility_off,
+                            color: Color.fromARGB(255, 255, 115, 0),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          },
+                        )),
+                    style: const TextStyle(fontSize: 25),
+                  )),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: TextFormField(
+                      controller: cnfrmPasswordController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (val) =>
+                          val == passwordController.text.toString()
+                              ? null
+                              : 'Password does not match',
+                      obscureText: isVisible2,
+                      decoration: InputDecoration(
+                          labelText: 'Confirmed Password',
+                          labelStyle: TextStyle(
+                              color: Color.fromRGBO(242, 140, 40, 5),
+                              fontSize: 20),
+                          border: UnderlineInputBorder(),
+                          isDense: true,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isVisible2
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Color.fromARGB(255, 255, 115, 0),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isVisible2 = !isVisible2;
+                              });
+                            },
+                          )),
+                      style: const TextStyle(fontSize: 25))),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: IntlPhoneField(
+                    //pickerDialogStyle: C,
+                    controller: phoneController,
+                    onCountryChanged: (phone) =>
+                        countryController.text = phone.name,
+                    initialCountryCode: 'PK',
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                      labelStyle: TextStyle(
+                          color: Color.fromRGBO(242, 140, 40, 5), fontSize: 20),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(),
+                      ),
+                    ),
+                  )),
+              SizedBox(
+                  width: width * 0.85,
+                  height: height * 0.09,
+                  child: TextField(
+                      controller: countryController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          isDense: true,
+                          labelText: 'country (read only)',
+                          labelStyle: TextStyle(
+                              color: Color.fromRGBO(242, 140, 40, 5),
+                              fontSize: 20)),
+                      style: const TextStyle(fontSize: 25))),
+              Padding(
+                  padding: EdgeInsets.only(top: height * 0.02),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: checkValue,
+                          onChanged: (newValue) {
+                            setState(() {
+                              checkValue = newValue;
+                            });
+                          },
+                        ),
+                        const Text(
+                          'I agree to the ',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        GestureDetector(
+                          child: const Text('QC Terms and Conditions'),
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TermsAndConditions())),
+                        )
+                      ])),
+              Padding(
+                  padding: EdgeInsets.only(
+                      top: height * 0.03, bottom: height * 0.02),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        if (cnfrmPasswordController.text.toString() ==
+                            passwordController.text.toString()) {
+                          if (checkValue == true) {
+                            if (RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(validate)) {
+                              if (passwordController.text.toString().length >
+                                  5) {
+                                signUpAPI(
+                                    nameController.text.toString(),
+                                    emailController.text.toString(),
+                                    passwordController.text.toString(),
+                                    countryController.text.toString(),
+                                    phoneController.text.toString());
+                              } else {
+                                showErrorMessage(
+                                    'Password should atleast 6 characters long');
+                              }
+                            } else {
+                              showErrorMessage('Enter a valid email address');
+                            }
+                          } else {
+                            showErrorMessage(
+                                'Accept the terms and conditions first!');
+                          }
+                        } else {
+                          showErrorMessage('Password does not match');
+                        }
+                      },
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Color.fromARGB(255, 255, 115, 0)),
+                        foregroundColor: MaterialStatePropertyAll(Colors.black),
+                        fixedSize:
+                            MaterialStatePropertyAll(Size.fromWidth(200)),
+                      ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(fontSize: 30),
+                      ))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Center(
+                      child: Text(
+                    'Already have Account?',
+                    style: TextStyle(color: Colors.black),
+                  )),
+                  GestureDetector(
+                      child: const Text(' Login'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LogInScreen()));
+                      })
+                ],
               )
-            ],
-          )
-        ]),
-      ),
-    ));
+            ]),
+          ),
+        ));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/accountLogin.dart';
 import 'package:fyp2/accountNotLogin.dart';
+import 'package:fyp2/login.dart';
 import 'globalVar.dart';
 import 'homeScreen.dart';
 import 'AddList.dart';
@@ -29,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: IndexedStack(index: bottomIndex, children: listWidget),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: Color.fromRGBO(242, 140, 40, 5),
+          canvasColor: Color.fromARGB(255, 255, 115, 0),
         ),
         child: BottomNavigationBar(
             showUnselectedLabels: true,
@@ -38,7 +39,40 @@ class _MyHomePageState extends State<MyHomePage> {
             unselectedItemColor: Colors.black54,
             //backgroundColor: Colors.yellow,
             onTap: (index) => setState(() {
-                  if (index == 3 && token == '') {
+                  if ((index == 0 || index == 2) && token == '') {
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('Close',
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                        ))),
+                                TextButton(
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LogInScreen())),
+                                  child: Text('Log in',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      )),
+                                )
+                              ],
+                              title: Text('Log in',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  )),
+                              content: Text('Please Log in, to continue!',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  )),
+                              buttonPadding: EdgeInsets.only(top: 20),
+                              backgroundColor: Color.fromARGB(255, 255, 115, 0),
+                            ));
+                  } else if (index == 3 && token == '') {
                     listWidget.removeLast();
                     listWidget.add(AccountNotLoginScreen());
                     bottomIndex = index;

@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: width * 0.4,
                 height: width * 0.4,
                 child: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/Quick logo.jpeg'),
+                  backgroundImage: AssetImage('assets/images/images1.png'),
                 ),
               ),
             ),
@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 title: Text(snapshot.data!['fullName']),
-                                tileColor: Colors.yellow,
+                                tileColor: Color.fromARGB(255, 255, 115, 0),
                                 textColor: Colors.black),
                           ),
                           Padding(
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 title: Text(snapshot.data!['emailAddress']),
-                                tileColor: Colors.yellow,
+                                tileColor: Color.fromARGB(255, 255, 115, 0),
                                 textColor: Colors.black),
                           ),
                           Padding(
@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 title: Text(snapshot.data!['phoneNumber']),
-                                tileColor: Colors.yellow,
+                                tileColor: Color.fromARGB(255, 255, 115, 0),
                                 textColor: Colors.black),
                           ),
                           Padding(
@@ -99,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 title: Text(snapshot.data!['country']),
-                                tileColor: Colors.yellow,
+                                tileColor: Color.fromARGB(255, 255, 115, 0),
                                 textColor: Colors.black),
                           ),
                         ]);

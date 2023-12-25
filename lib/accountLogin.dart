@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/AddList.dart';
 import 'package:fyp2/navigation.dart';
+import 'package:fyp2/termsCond.dart';
+import 'myList.dart';
 import 'profile.dart';
 import 'globalVar.dart';
 
@@ -30,8 +32,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                   width: width * 0.4,
                   height: width * 0.4,
                   child: const CircleAvatar(
-                    backgroundImage:
-                        AssetImage('assets/images/Quick logo.jpeg'),
+                    backgroundImage: AssetImage('assets/images/images1.png'),
                   ),
                 ),
               ),
@@ -45,7 +46,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                         borderRadius: BorderRadius.circular(20)),
                     title: Text('Your Profile'),
                     trailing: Icon(Icons.arrow_forward),
-                    tileColor: Colors.yellow,
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
                     textColor: Colors.black,
                     iconColor: Colors.black,
                     onTap: () => Navigator.push(
@@ -59,14 +60,15 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                     left: width * 0.05,
                     right: width * 0.05),
                 child: ListTile(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  title: Text('Your Lists'),
-                  trailing: Icon(Icons.arrow_forward),
-                  tileColor: Colors.yellow,
-                  textColor: Colors.black,
-                  iconColor: Colors.black,
-                ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('My Lists'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
+                    textColor: Colors.black,
+                    iconColor: Colors.black,
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ListScreen()))),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -78,7 +80,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                         borderRadius: BorderRadius.circular(20)),
                     title: Text('Add List'),
                     trailing: Icon(Icons.arrow_forward),
-                    tileColor: Colors.yellow,
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
                     textColor: Colors.black,
                     iconColor: Colors.black,
                     onTap: () => Navigator.push(
@@ -92,14 +94,17 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                     left: width * 0.05,
                     right: width * 0.05),
                 child: ListTile(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  title: Text('Pending Lists'),
-                  trailing: Icon(Icons.arrow_forward),
-                  tileColor: Colors.yellow,
-                  textColor: Colors.black,
-                  iconColor: Colors.black,
-                ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('Terms & Conditions'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
+                    textColor: Colors.black,
+                    iconColor: Colors.black,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TermsAndConditions()))),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -111,7 +116,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                       borderRadius: BorderRadius.circular(20)),
                   title: Text('Delete Account'),
                   trailing: Icon(Icons.arrow_forward),
-                  tileColor: Colors.yellow,
+                  tileColor: Color.fromARGB(255, 255, 115, 0),
                   textColor: Colors.black,
                   iconColor: Colors.black,
                 ),
@@ -126,7 +131,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                         borderRadius: BorderRadius.circular(20)),
                     title: Text('Logout'),
                     trailing: Icon(Icons.arrow_forward),
-                    tileColor: Colors.yellow,
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
                     textColor: Colors.black,
                     iconColor: Colors.black,
                     onTap: () {
