@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/termsCond.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/countries.dart';
+import 'package:csc_picker/csc_picker.dart';
 import 'navigation.dart';
 import 'login.dart';
 import 'globalVar.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-import 'dart:async';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,17 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cnfrmPasswordController = TextEditingController();
-  TextEditingController countryController =
-      TextEditingController(text: 'Pakistan');
   TextEditingController phoneController = TextEditingController();
-
-  void showSuccessMessage(message) {
-    SnackBar snackBarMessage = SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.green[400],
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage);
-  }
 
   void showErrorMessage(message) {
     SnackBar snackBarMessage = SnackBar(
@@ -40,26 +31,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBarMessage);
   }
 
-  void signUpAPI(String name, email, password, country, phone) async {
+  void signUpAPI(String name, email, password, phone, state, city) async {
     Response response =
         await post(Uri.parse(liveURL + 'api/userSignUp'), body: {
       'emailAddress': email,
       'phoneNumber': phone,
       'fullName': name,
       'password': password,
-      'country': country
+      'country': 'Pakistan',
+      'state': state,
+      'city': city
     });
     var body = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
-      userCountry = country;
-      id = body['data']['_id'];
       token = body['token'];
-      showSuccessMessage('Sign up Successfully!');
-      Timer(Duration(seconds: 2), () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyHomePage()));
-      });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyHomePage()));
     } else {
+      setState(() {
+        isLoading = false;
+      });
       showErrorMessage(body['message']);
     }
   }
@@ -67,7 +58,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isVisible = true;
   bool isVisible2 = true;
   bool? checkValue = false;
+  bool isLoading = false;
   String validate = '';
+  String? stateValue;
+  String? cityValue;
+  String? countryValue;
 
   @override
   Widget build(BuildContext context) {
@@ -206,10 +201,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: width * 0.85,
                   height: height * 0.09,
                   child: IntlPhoneField(
-                    //pickerDialogStyle: C,
                     controller: phoneController,
-                    onCountryChanged: (phone) =>
-                        countryController.text = phone.name,
+                    showDropdownIcon: false,
+                    countries: [
+                      Country(
+                        name: "Pakistan",
+                        nameTranslations: {
+                          "sk": "Pakistan",
+                        },
+                        flag: "🇵🇰",
+                        code: "PK",
+                        dialCode: "92",
+                        minLength: 10,
+                        maxLength: 10,
+                      ),
+                    ],
                     initialCountryCode: 'PK',
                     decoration: const InputDecoration(
                       labelText: 'Phone Number',
@@ -220,20 +226,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   )),
-              SizedBox(
-                  width: width * 0.85,
-                  height: height * 0.09,
-                  child: TextField(
-                      controller: countryController,
-                      readOnly: true,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          isDense: true,
-                          labelText: 'country (read only)',
-                          labelStyle: TextStyle(
-                              color: Color.fromRGBO(242, 140, 40, 5),
-                              fontSize: 20)),
-                      style: const TextStyle(fontSize: 25))),
+              Container(
+                margin: EdgeInsets.only(top: height * 0.02),
+                width: width * 0.85,
+                height: height * 0.12,
+                child: CSCPicker(
+                  defaultCountry: CscCountry.Pakistan,
+                  disableCountry: true,
+                  onCountryChanged: (value) {
+                    setState(() {
+                      countryValue = value;
+                    });
+                  },
+                  onStateChanged: (value) {
+                    setState(() {
+                      stateValue = value;
+                    });
+                  },
+                  onCityChanged: (value) {
+                    setState(() {
+                      cityValue = value;
+                    });
+                  },
+                ),
+              ),
               Padding(
                   padding: EdgeInsets.only(top: height * 0.02),
                   child: Row(
@@ -265,6 +281,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       top: height * 0.03, bottom: height * 0.02),
                   child: ElevatedButton(
                       onPressed: () {
+                        setState(() {
+                          isLoading = true;
+                        });
                         if (cnfrmPasswordController.text.toString() ==
                             passwordController.text.toString()) {
                           if (checkValue == true) {
@@ -273,24 +292,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 .hasMatch(validate)) {
                               if (passwordController.text.toString().length >
                                   5) {
-                                signUpAPI(
-                                    nameController.text.toString(),
-                                    emailController.text.toString(),
-                                    passwordController.text.toString(),
-                                    countryController.text.toString(),
-                                    phoneController.text.toString());
+                                if (stateValue != null && cityValue != null) {
+                                  signUpAPI(
+                                      nameController.text.toString(),
+                                      emailController.text.toString(),
+                                      passwordController.text.toString(),
+                                      phoneController.text.toString(),
+                                      stateValue,
+                                      cityValue);
+                                } else {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  showErrorMessage('Enter your State and City');
+                                }
                               } else {
+                                setState(() {
+                                  isLoading = false;
+                                });
                                 showErrorMessage(
                                     'Password should atleast 6 characters long');
                               }
                             } else {
+                              setState(() {
+                                isLoading = false;
+                              });
                               showErrorMessage('Enter a valid email address');
                             }
                           } else {
+                            setState(() {
+                              isLoading = false;
+                            });
                             showErrorMessage(
                                 'Accept the terms and conditions first!');
                           }
                         } else {
+                          setState(() {
+                            isLoading = false;
+                          });
                           showErrorMessage('Password does not match');
                         }
                       },
@@ -301,10 +340,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fixedSize:
                             MaterialStatePropertyAll(Size.fromWidth(200)),
                       ),
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(fontSize: 30),
-                      ))),
+                      child: isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.black,
+                            )
+                          : const Text(
+                              'Sign Up',
+                              style: TextStyle(fontSize: 30),
+                            ))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

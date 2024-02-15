@@ -51,7 +51,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     future: getUserProfile(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
+                        return Center(
+                          child: SizedBox(
+                              width: width * 0.1,
+                              height: width * 0.1,
+                              child: const CircularProgressIndicator()),
+                        );
                       } else {
                         return Column(children: [
                           Padding(
@@ -98,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: ListTile(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
-                                title: Text(snapshot.data!['country']),
+                                title: Text(snapshot.data!['city']),
                                 tileColor: Color.fromARGB(255, 255, 115, 0),
                                 textColor: Colors.black),
                           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/AddList.dart';
-import 'package:fyp2/navigation.dart';
+import 'package:fyp2/accountLogoutDelete.dart';
+import 'package:fyp2/reportIssues.dart';
 import 'package:fyp2/termsCond.dart';
+import 'package:fyp2/trackParcel.dart';
+import 'package:fyp2/updateLocation.dart';
 import 'myList.dart';
 import 'profile.dart';
-import 'globalVar.dart';
 
 class AccountLoginScreen extends StatefulWidget {
   const AccountLoginScreen({super.key});
@@ -20,9 +22,10 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
     var width = size.width;
     var height = size.height;
     return Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: 500,
+        body: Center(
+      child: SizedBox(
+        width: width * 0.9,
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
@@ -37,10 +40,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
+                padding: EdgeInsets.only(bottom: height * 0.02),
                 child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -55,10 +55,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                             builder: (context) => ProfileScreen()))),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
+                padding: EdgeInsets.only(bottom: height * 0.02),
                 child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -71,10 +68,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                         MaterialPageRoute(builder: (context) => ListScreen()))),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
+                padding: EdgeInsets.only(bottom: height * 0.02),
                 child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -89,10 +83,50 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                             builder: (context) => AddListScreen()))),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
+                padding: EdgeInsets.only(bottom: height * 0.02),
+                child: ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('Update your Location'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
+                    textColor: Colors.black,
+                    iconColor: Colors.black,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UpdateMyLocation()))),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.02),
+                child: ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('Track Parcel'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
+                    textColor: Colors.black,
+                    iconColor: Colors.black,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TrackParcel()))),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.02),
+                child: ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('Report an Issue'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Color.fromARGB(255, 255, 115, 0),
+                    textColor: Colors.black,
+                    iconColor: Colors.black,
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => repIssue()))),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.02),
                 child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -107,25 +141,7 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                             builder: (context) => TermsAndConditions()))),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
-                child: ListTile(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  title: Text('Delete Account'),
-                  trailing: Icon(Icons.arrow_forward),
-                  tileColor: Color.fromARGB(255, 255, 115, 0),
-                  textColor: Colors.black,
-                  iconColor: Colors.black,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: height * 0.02,
-                    left: width * 0.05,
-                    right: width * 0.05),
+                padding: EdgeInsets.only(bottom: height * 0.02),
                 child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -135,17 +151,29 @@ class _AccountLoginScreenState extends State<AccountLoginScreen> {
                     textColor: Colors.black,
                     iconColor: Colors.black,
                     onTap: () {
-                      token = '';
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MyHomePage()));
+                      confirmLogoutDelete(
+                          context, 'Logout', 'Are you sure?', 'l');
+                    }),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: height * 0.02),
+                child: ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: Text('Delete Account'),
+                    trailing: Icon(Icons.arrow_forward),
+                    tileColor: Colors.black,
+                    textColor: Color.fromARGB(255, 255, 115, 0),
+                    iconColor: Color.fromARGB(255, 255, 115, 0),
+                    onTap: () {
+                      confirmLogoutDelete(
+                          context, 'Delete Account', 'Are you sure?', 'd');
                     }),
               ),
             ],
           ),
         ),
       ),
-    );
+    ));
   }
 }

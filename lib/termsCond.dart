@@ -1,3 +1,4 @@
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fyp2/globalVar.dart';
@@ -40,9 +41,14 @@ class TermsAndConditions extends StatelessWidget {
                 future: getTerms(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
+                    return Center(
+                      child: SizedBox(
+                          width: width * 0.1,
+                          height: width * 0.1,
+                          child: const CircularProgressIndicator()),
+                    );
                   } else {
-                    return Text(snapshot.data.toString());
+                    return HtmlWidget(snapshot.data.toString());
                   }
                 }),
           ),

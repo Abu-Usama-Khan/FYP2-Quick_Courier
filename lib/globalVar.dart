@@ -1,4 +1,2 @@
-var liveURL = 'https://tame-pink-chick.cyclic.app/';
-var id = '';
+var liveURL = 'https://fragile-teal-dibbler.cyclic.app/';
 var token = '';
-var userCountry = '';

@@ -4,7 +4,6 @@ import 'signup.dart';
 import 'globalVar.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
-import 'dart:async';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -16,14 +15,6 @@ class LogInScreen extends StatefulWidget {
 class _LogInScreenState extends State<LogInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-  void showSuccessMessage(message) {
-    SnackBar snackBarMessage = SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.green[400],
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMessage);
-  }
 
   void showErrorMessage(message) {
     SnackBar snackBarMessage = SnackBar(
@@ -38,20 +29,19 @@ class _LogInScreenState extends State<LogInScreen> {
         body: {'emailAddress': email, 'password': password});
     var body = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
-      userCountry = body['data']['country'];
-      id = body['data']['_id'];
       token = body['token'];
-      showSuccessMessage('Login Successfully!');
-      Timer(Duration(seconds: 2), () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyHomePage()));
-      });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyHomePage()));
     } else {
+      setState(() {
+        isLoading = false;
+      });
       showErrorMessage(body['message']);
     }
   }
 
   bool isVisible = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -128,11 +118,18 @@ class _LogInScreenState extends State<LogInScreen> {
                   foregroundColor: MaterialStatePropertyAll(Colors.black),
                   fixedSize: MaterialStatePropertyAll(Size.fromWidth(200)),
                 ),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(fontSize: 30),
-                ),
+                child: isLoading
+                    ? CircularProgressIndicator(
+                        color: Colors.black,
+                      )
+                    : const Text(
+                        'Login',
+                        style: TextStyle(fontSize: 30),
+                      ),
                 onPressed: () {
+                  setState(() {
+                    isLoading = true;
+                  });
                   logInAPi(emailController.text.toString(),
                       passwordController.text.toString());
                 })),

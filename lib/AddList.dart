@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fyp2/paymentScreen.dart';
-import 'package:csc_picker/csc_picker.dart';
 import 'package:date_field/date_field.dart';
 
 class AddListScreen extends StatefulWidget {
@@ -15,11 +14,19 @@ class _AddListScreenState extends State<AddListScreen> {
   TextEditingController descController = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
-  var baseCountry = '';
-  String? baseCity;
-  var destCountry = '';
-  String? destCity;
   String? recDate;
+  String? chooseValueFrom;
+  String? chooseValueTo;
+  int value = 1;
+  List itemList = [
+    'Hyderabad',
+    'Islamabad',
+    'Karachi',
+    'Lahore',
+    'Multan',
+    'Peshawar',
+    'Queta'
+  ];
 
   void showErrorMessage(msg) {
     SnackBar snckbar =
@@ -28,10 +35,8 @@ class _AddListScreenState extends State<AddListScreen> {
   }
 
   void nullCheck() {
-    if (baseCountry != '' &&
-        baseCity != '' &&
-        destCountry != '' &&
-        destCity != '' &&
+    if (chooseValueFrom != null &&
+        chooseValueTo != null &&
         recDate != '' &&
         destLocController.text.toString() != '' &&
         descController.text.toString() != '' &&
@@ -40,14 +45,13 @@ class _AddListScreenState extends State<AddListScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => PaymentScreen(
-                  baseCtry: baseCountry,
-                  baseCty: baseCity,
-                  destCtry: destCountry,
-                  destCty: destCity,
+                  fromCity: chooseValueFrom,
+                  toCity: chooseValueTo,
                   date: recDate,
                   destLoc: destLocController.text.toString(),
                   desc: descController.text.toString(),
-                  price: priceController.text.toString())));
+                  price: priceController.text.toString(),
+                  weight: value.toString())));
     } else {
       showErrorMessage('All fields are required');
     }
@@ -76,7 +80,7 @@ class _AddListScreenState extends State<AddListScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: height * 0.05),
                   child: const Text(
-                    'Base Region',
+                    'From City',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -88,22 +92,24 @@ class _AddListScreenState extends State<AddListScreen> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(bottom: height * 0.02),
-                    child: CSCPicker(
-                      onCountryChanged: (country) {
+                  padding: EdgeInsets.only(bottom: height * 0.02),
+                  child: DropdownButton(
+                      isExpanded: true,
+                      hint: Text('Select City'),
+                      items: itemList.map((valueItem) {
+                        return DropdownMenuItem(
+                            value: valueItem, child: Text(valueItem));
+                      }).toList(),
+                      value: chooseValueFrom,
+                      onChanged: (newValue) {
                         setState(() {
-                          baseCountry = country.toString();
+                          chooseValueFrom = newValue.toString();
                         });
                       },
-                      onStateChanged: (state) {},
-                      onCityChanged: (city) {
-                        setState(() {
-                          baseCity = city;
-                        });
-                      },
-                    )),
-                const Text('Destination Region',
-                    style: TextStyle(fontSize: 20)),
+                      iconSize: width * 0.08,
+                      iconEnabledColor: Color.fromARGB(255, 255, 115, 0)),
+                ),
+                const Text('To City', style: TextStyle(fontSize: 20)),
                 Padding(
                   padding: EdgeInsets.only(bottom: height * 0.003),
                   child: Divider(
@@ -111,24 +117,24 @@ class _AddListScreenState extends State<AddListScreen> {
                     thickness: height * 0.003,
                   ),
                 ),
-                Padding(
-                    padding: EdgeInsets.only(bottom: height * 0.003),
-                    child: CSCPicker(
-                      onCountryChanged: (country) {
-                        setState(() {
-                          destCountry = country.toString();
-                        });
-                      },
-                      onStateChanged: (state) {},
-                      onCityChanged: (city) {
-                        setState(() {
-                          destCity = city.toString();
-                        });
-                      },
-                    )),
+                DropdownButton(
+                    isExpanded: true,
+                    hint: Text('Select City'),
+                    items: itemList.map((valueItem) {
+                      return DropdownMenuItem(
+                          value: valueItem, child: Text(valueItem));
+                    }).toList(),
+                    value: chooseValueTo,
+                    onChanged: (newValue) {
+                      setState(() {
+                        chooseValueTo = newValue.toString();
+                      });
+                    },
+                    iconSize: width * 0.08,
+                    iconEnabledColor: Color.fromARGB(255, 255, 115, 0)),
                 Padding(
                     padding: EdgeInsets.only(
-                        top: height * 0.02, bottom: height * 0.003),
+                        top: height * 0.03, bottom: height * 0.003),
                     child: DateTimeFormField(
                       decoration: const InputDecoration(
                           hintStyle: TextStyle(
@@ -136,6 +142,7 @@ class _AddListScreenState extends State<AddListScreen> {
                           errorStyle: TextStyle(color: Colors.redAccent),
                           border: OutlineInputBorder(),
                           suffixIcon: Icon(Icons.event_note),
+                          suffixIconColor: Color.fromARGB(255, 255, 115, 0),
                           labelText: 'Recieving Date',
                           labelStyle: TextStyle(
                               color: Color.fromARGB(255, 152, 152, 152))),
@@ -154,11 +161,15 @@ class _AddListScreenState extends State<AddListScreen> {
                   padding: EdgeInsets.only(bottom: height * 0.003),
                   child: TextField(
                     controller: destLocController,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 17),
                     decoration: const InputDecoration(
                       hintText: 'Destination Address',
                       hintStyle: TextStyle(
                           color: Color.fromARGB(255, 152, 152, 152),
-                          fontSize: 15.0),
+                          fontSize: 17),
                     ),
                   ),
                 ),
@@ -166,11 +177,15 @@ class _AddListScreenState extends State<AddListScreen> {
                   padding: EdgeInsets.only(bottom: height * 0.003),
                   child: TextField(
                     controller: descController,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 3,
+                    style: TextStyle(fontSize: 17),
                     decoration: const InputDecoration(
                       hintText: 'Description',
                       hintStyle: TextStyle(
                           color: Color.fromARGB(255, 152, 152, 152),
-                          fontSize: 15.0),
+                          fontSize: 17),
                     ),
                   ),
                 ),
@@ -179,12 +194,62 @@ class _AddListScreenState extends State<AddListScreen> {
                   child: TextField(
                     controller: priceController,
                     keyboardType: TextInputType.number,
+                    style: TextStyle(fontSize: 17),
                     decoration: const InputDecoration(
-                      hintText: 'Price you pay (in USD dollar)',
+                      hintText: 'Price you pay (in PKR)',
                       hintStyle: TextStyle(
                           color: Color.fromARGB(255, 152, 152, 152),
-                          fontSize: 15.0),
+                          fontSize: 17),
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: height * 0.03),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Approx Weight (in KGs):',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 255, 115, 0))),
+                      Container(
+                        width: width * 0.25,
+                        color: Color.fromARGB(150, 255, 115, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              color: Color.fromARGB(255, 255, 115, 0),
+                              child: InkWell(
+                                  onTap: () {
+                                    if (value > 1) {
+                                      setState(() {
+                                        value = value - 1;
+                                      });
+                                    }
+                                  },
+                                  child:
+                                      Icon(Icons.remove, size: width * 0.075)),
+                            ),
+                            Text(value.toString(),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white)),
+                            Container(
+                              color: Color.fromARGB(255, 255, 115, 0),
+                              child: InkWell(
+                                  onTap: () {
+                                    if (value < 20) {
+                                      setState(() {
+                                        value = value + 1;
+                                      });
+                                    }
+                                  },
+                                  child: Icon(Icons.add, size: width * 0.075)),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Padding(

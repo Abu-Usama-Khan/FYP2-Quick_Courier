@@ -91,7 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       future: getList(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return const CircularProgressIndicator();
+                          return Center(
+                            child: SizedBox(
+                                width: width * 0.1,
+                                height: width * 0.1,
+                                child: const CircularProgressIndicator()),
+                          );
                         } else {
                           return ListView.builder(
                             itemCount: snapshot.data.length,
@@ -145,21 +150,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                             tileColor: Color.fromARGB(
                                                 255, 255, 115, 0),
                                             title: Text(snapshot.data[index]
-                                                        ['baseCountry']
-                                                    .toString() +
-                                                ' to ' +
-                                                snapshot.data[index]
-                                                        ['destinationCountry']
-                                                    .toString()),
-                                            subtitle: Text(snapshot.data[index]
                                                         ['baseCity']
                                                     .toString() +
                                                 ' to ' +
                                                 snapshot.data[index]
                                                         ['destinationCity']
                                                     .toString()),
-                                            trailing: Text(
-                                                snapshot.data[index]['price'].toString() + ' USD'))
+                                            trailing: Text(snapshot.data[index]
+                                                        ['price']
+                                                    .toString() +
+                                                ' PKR'))
                                       ],
                                     ),
                                   ),
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           );
                         }
-                      })),
+                      }))
             ],
           ),
         ),
@@ -176,26 +176,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-/***const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Text(
-                                        "Pakistan to Dubai",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.only(top: 5, bottom: 20),
-                                      child: Text(
-                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    )***/

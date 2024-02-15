@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fyp2/chat.dart';
 import 'package:fyp2/globalVar.dart';
-import 'package:fyp2/login.dart';
+import 'package:fyp2/loginFirstAlert.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailedScreen extends StatefulWidget {
-  var dataMap;
+  final dataMap;
   DetailedScreen({Key? myKey, this.dataMap}) : super(key: myKey);
 
   @override
@@ -16,14 +15,18 @@ class DetailedScreen extends StatefulWidget {
 }
 
 class _DetailedScreenState extends State<DetailedScreen> {
-  void getListById() async {
+  void getListById(a) async {
     Response response = await get(Uri.parse(liveURL +
         'api/fetchActiveListById?listId=' +
         widget.dataMap['_id'].toString()));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && a == 'c') {
       var data = jsonDecode(response.body);
       var path = data['data']['userId']['phoneNumber'].toString();
       launchUrl(await Uri(scheme: 'tel', path: path));
+    } else if (response.statusCode == 200 && a == 's') {
+      var data = jsonDecode(response.body);
+      var path = data['data']['userId']['phoneNumber'].toString();
+      launchUrl(await Uri(scheme: 'sms', path: path + '?body: Hi!'));
     } else {
       var path = '';
       launchUrl(await Uri(scheme: 'tel', path: path));
@@ -76,81 +79,49 @@ class _DetailedScreenState extends State<DetailedScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('USD ' + widget.dataMap['price'].toString(),
+                          Text('PKR ' + widget.dataMap['price'].toString(),
                               style: TextStyle(fontSize: 25)),
-                          ElevatedButton(
-                              onPressed: () async {
-                                getListById();
-                                //print(path);
-                                //launchUrl(await Uri(scheme: 'tel', path: path));
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.phone),
-                                  Text('Call'),
-                                ],
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    token != ''
+                                        ? getListById('s')
+                                        : alertBox(context);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.message),
+                                      Text('SMS'),
+                                    ],
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          Color.fromARGB(255, 241, 219, 201),
+                                      foregroundColor: Colors.black)),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: ElevatedButton(
+                                    onPressed: () async {
+                                      token != ''
+                                          ? getListById('c')
+                                          : alertBox(context);
+                                      //print(path);
+                                      //launchUrl(await Uri(scheme: 'tel', path: path));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.phone),
+                                        Text('Call'),
+                                      ],
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 255, 115, 0),
+                                        foregroundColor: Colors.black)),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Color.fromARGB(255, 241, 219, 201),
-                                  foregroundColor: Colors.black)),
-                          ElevatedButton(
-                              onPressed: () {
-                                if (token == '') {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: Text('Close',
-                                                      style: TextStyle(
-                                                        color: Colors.black54,
-                                                      ))),
-                                              TextButton(
-                                                onPressed: () => Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            LogInScreen())),
-                                                child: Text('Log in',
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    )),
-                                              )
-                                            ],
-                                            title: Text('Log in',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                )),
-                                            content: Text(
-                                                'Please Log in, to continue!',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                )),
-                                            buttonPadding:
-                                                EdgeInsets.only(top: 20),
-                                            backgroundColor: Color.fromARGB(
-                                                255, 255, 115, 0),
-                                          ));
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChatScreen()));
-                                }
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.chat),
-                                  Text('Chat'),
-                                ],
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Color.fromARGB(255, 255, 115, 0),
-                                  foregroundColor: Colors.black))
+                            ],
+                          ),
                         ],
                       )),
                   Container(
@@ -172,75 +143,78 @@ class _DetailedScreenState extends State<DetailedScreen> {
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold)),
                         ),
-                        Row(children: [
-                          const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('From:',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        height: 2)),
-                                Text('To',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        height: 2)),
-                                Text('Destination Address:',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        height: 2)),
-                                Text('Recieving Till Date:',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        height: 2))
-                              ]),
-                          Padding(
-                            padding: EdgeInsets.only(left: width * 0.03),
-                            child: Column(
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(children: [
+                            const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                      widget.dataMap['baseCity'].toString() +
-                                          ' (' +
-                                          widget.dataMap['baseCountry']
-                                              .toString() +
-                                          ')',
+                                  Text('From:',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                           height: 2)),
-                                  Text(
-                                      widget.dataMap['destinationCity']
-                                              .toString() +
-                                          ' (' +
-                                          widget.dataMap['destinationCountry']
-                                              .toString() +
-                                          ')',
+                                  Text('To',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                           height: 2)),
-                                  Text(
-                                      widget.dataMap['destinationLocation']
-                                          .toString(),
+                                  Text('Destination Address:',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                           height: 2)),
-                                  Text(
-                                      widget.dataMap['receivingDate']
-                                          .split('T')[0]
-                                          .toString(),
+                                  Text('Recieving Till Date:',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
                                           height: 2))
                                 ]),
-                          )
-                        ]),
+                            Padding(
+                              padding: EdgeInsets.only(left: width * 0.03),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        widget.dataMap['baseCity'].toString() +
+                                            ' (' +
+                                            widget.dataMap['baseCountry']
+                                                .toString() +
+                                            ')',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            height: 2)),
+                                    Text(
+                                        widget.dataMap['destinationCity']
+                                                .toString() +
+                                            ' (' +
+                                            widget.dataMap['destinationCountry']
+                                                .toString() +
+                                            ')',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            height: 2)),
+                                    Text(
+                                        widget.dataMap['destinationLocation']
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            height: 2)),
+                                    Text(
+                                        widget.dataMap['receivingDate']
+                                            .split('T')[0]
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            height: 2))
+                                  ]),
+                            )
+                          ]),
+                        ),
                       ],
                     ),
                   ),
@@ -281,7 +255,12 @@ class _DetailedScreenState extends State<DetailedScreen> {
                             future: getListById2(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return CircularProgressIndicator();
+                                return Center(
+                                  child: SizedBox(
+                                      width: width * 0.1,
+                                      height: width * 0.1,
+                                      child: const CircularProgressIndicator()),
+                                );
                               } else {
                                 return ListTile(
                                   leading: CircleAvatar(
