@@ -30,15 +30,17 @@ class _TrackParcelState extends State<TrackParcel> {
 
   void getTracking(String num) async {
     Response response = await get(Uri.parse(
-        liveURL + '/api/getUserProfile?phoneNumber=$num&token=$token'));
+        liveURL + '/api/fetchUserByPhoneNumber?phoneNumber=$num&token=$token'));
     var body = jsonDecode(response.body.toString());
+    print(num);
     if (response.statusCode == 200) {
+      print(num);
       setState(() {
         phnNum = num;
         name = body['data']['fullName'];
         state = body['data']['state'];
         city = body['data']['city'];
-        lastUpdated = body['data']['lastUpdateLocation'];
+        //lastUpdated = body['data']['lastUpdateLocation'];
       });
     } else {
       setState(() {
@@ -97,7 +99,12 @@ class _TrackParcelState extends State<TrackParcel> {
                             setState(() {
                               isLoading = true;
                             });
-                            getTracking(phoneController.text.toString());
+                            getTracking('+92' +
+                                phoneController.text
+                                    .toString()
+                                    .substring(0, 3) +
+                                '-' +
+                                phoneController.text.toString().substring(3));
                           },
                           child: isLoading
                               ? Center(child: CircularProgressIndicator())
@@ -172,10 +179,11 @@ class _TrackParcelState extends State<TrackParcel> {
                             height: height * 0.03,
                           ),
                           Text(
-                              lastUpdated.substring(0, 10) +
+                              /***lastUpdated.substring(0, 10) +
                                   ' (' +
                                   lastUpdated.substring(11, 19) +
-                                  ')',
+                                  ')' ***/
+                              'dd',
                               style:
                                   TextStyle(color: Colors.black, fontSize: 18))
                         ],

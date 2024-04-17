@@ -1,2 +1,2 @@
-var liveURL = 'https://fragile-teal-dibbler.cyclic.app/';
+var liveURL = 'https://ruby-chiton-shoe.cyclic.app/';
 var token = '';

@@ -173,75 +173,78 @@ class _DetailedScreen2State extends State<DetailedScreen2> {
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold)),
                       ),
-                      Row(children: [
-                        const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('From:',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      height: 2)),
-                              Text('To',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      height: 2)),
-                              Text('Destination Address:',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      height: 2)),
-                              Text('Recieving Till Date:',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      height: 2))
-                            ]),
-                        Padding(
-                          padding: EdgeInsets.only(left: width * 0.03),
-                          child: Column(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: [
+                          const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    widget.dataMap['baseCity'].toString() +
-                                        ' (' +
-                                        widget.dataMap['baseCountry']
-                                            .toString() +
-                                        ')',
+                                Text('From:',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                         height: 2)),
-                                Text(
-                                    widget.dataMap['destinationCity']
-                                            .toString() +
-                                        ' (' +
-                                        widget.dataMap['destinationCountry']
-                                            .toString() +
-                                        ')',
+                                Text('To',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                         height: 2)),
-                                Text(
-                                    widget.dataMap['destinationLocation']
-                                        .toString(),
+                                Text('Destination Address:',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                         height: 2)),
-                                Text(
-                                    widget.dataMap['receivingDate']
-                                        .split('T')[0]
-                                        .toString(),
+                                Text('Recieving Till Date:',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,
                                         height: 2))
                               ]),
-                        )
-                      ]),
+                          Padding(
+                            padding: EdgeInsets.only(left: width * 0.03),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      widget.dataMap['baseCity'].toString() +
+                                          ' (' +
+                                          widget.dataMap['baseCountry']
+                                              .toString() +
+                                          ')',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          height: 2)),
+                                  Text(
+                                      widget.dataMap['destinationCity']
+                                              .toString() +
+                                          ' (' +
+                                          widget.dataMap['destinationCountry']
+                                              .toString() +
+                                          ')',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          height: 2)),
+                                  Text(
+                                      widget.dataMap['destinationLocation']
+                                          .toString(),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          height: 2)),
+                                  Text(
+                                      widget.dataMap['receivingDate']
+                                          .split('T')[0]
+                                          .toString(),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          height: 2))
+                                ]),
+                          )
+                        ]),
+                      ),
                     ],
                   ),
                 ),
